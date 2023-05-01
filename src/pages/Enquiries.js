@@ -1,0 +1,44 @@
+import React from "react";
+import { Table } from "antd";
+
+const columns = [
+  {
+    title: "STT",
+    dataIndex: "key",
+  },
+  {
+    title: "Age",
+    dataIndex: "name",
+  },
+  {
+    title: "Sản phẩm",
+    dataIndex: "product",
+  },
+  {
+    title: "Trang thái",
+    dataIndex: "status",
+  },
+];
+
+const data1 = [];
+for (let i = 0; i < 46; i++) {
+  data1.push({
+    key: i,
+    name: `Edward King ${i}`,
+    product: 32,
+    address: `London, Park Lane no. ${i}`,
+  });
+}
+
+const Enquiries = () => {
+  return (
+    <div>
+      <h3 className="mb-4 title">Thắc mắc</h3>
+      <div>
+        <Table columns={columns} dataSource={data1} />
+      </div>
+    </div>
+  );
+};
+
+export default Enquiries;
