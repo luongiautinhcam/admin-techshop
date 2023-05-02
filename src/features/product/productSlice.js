@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import productService from "./productService";
+import { toast } from "react-toastify";
 
 export const getProducts = createAsyncThunk(
   "product/get-products",
@@ -25,7 +26,6 @@ export const createProducts = createAsyncThunk(
 
 const initialState = {
   products: [],
-  createProduct: "",
   isError: false,
   isLoading: false,
   isSuccess: false,
@@ -61,12 +61,14 @@ export const productSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.createProduct = action.payload;
+        toast.success("Thêm sản phẩm thành công!");
       })
       .addCase(createProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
+        toast.error("Có lỗi gì đó!");
       });
   },
 });

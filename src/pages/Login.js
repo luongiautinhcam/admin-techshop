@@ -57,7 +57,7 @@ const Login = () => {
             label="Địa chỉ email"
             id="email"
             val={formik.values.email}
-            onCh={formik.handleChange("email")}
+            onChng={formik.handleChange("email")}
             onBlr={formik.handleBlur("email")}
           />
           <div className="error">
@@ -71,7 +71,7 @@ const Login = () => {
             label="Mật khẩu"
             id="pass"
             val={formik.values.password}
-            onCh={formik.handleChange("password")}
+            onChng={formik.handleChange("password")}
             onBlr={formik.handleBlur("password")}
           />
           <div className="error">
