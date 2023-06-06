@@ -6,6 +6,7 @@ import {
   AiOutlineUser,
   AiOutlineBgColors,
 } from "react-icons/ai";
+import { RiCouponLine } from "react-icons/ri";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link, Outlet } from "react-router-dom";
@@ -82,7 +83,7 @@ const MainLayout = () => {
                 {
                   key: "category",
                   icon: <BiCategoryAlt className="fs-4" />,
-                  label: "Danh mục",
+                  label: "Thêm danh mục",
                 },
                 {
                   key: "list-category",
@@ -105,6 +106,23 @@ const MainLayout = () => {
               key: "orders",
               icon: <FaClipboardList className="fs-4" />,
               label: "Đơn hàng",
+            },
+            {
+              key: "marketing",
+              icon: <RiCouponLine className="fs-4" />,
+              label: "Ưu dãi",
+              children: [
+                {
+                  key: "coupon",
+                  icon: <ImBlog className="fs-4" />,
+                  label: "Thêm mã giảm giá",
+                },
+                {
+                  key: "coupon-list",
+                  icon: <RiCouponLine className="fs-4" />,
+                  label: "Danh sách mã giảm giá",
+                },
+              ],
             },
             {
               key: "blogs",

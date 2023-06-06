@@ -1,33 +1,63 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CustomInput from "../components/CustomInput";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { createCategories } from "../features/pcategory/pcategorySlice";
+import {
+  createCategories,
+  getAProductCategory,
+  resetState,
+  updateAProductCategory,
+} from "../features/pcategory/pcategorySlice";
 
 let schema = yup.object().shape({
   title: yup.string().required("Tên danh mục không được để trống"),
 });
 const Addcat = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const getPCatId = location.pathname.split("/")[3];
+  const newProductCategory = useSelector((state) => state.pCategory);
+  const { categoryName } = newProductCategory;
+  useEffect(() => {
+    if (getPCatId !== undefined) {
+      dispatch(getAProductCategory(getPCatId));
+    } else {
+      dispatch(resetState());
+    }
+  }, [getPCatId]);
+
   const navigate = useNavigate();
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
+      title: categoryName || "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createCategories(values));
-      formik.resetForm();
-      setTimeout(() => {
-        navigate("/admin/list-category");
-      }, 2000);
+      if (getPCatId !== undefined) {
+        const data = { id: getPCatId, pCatData: values };
+        dispatch(updateAProductCategory(data));
+        setTimeout(() => {
+          dispatch(resetState());
+          navigate("/admin/list-category");
+        }, 100);
+      } else {
+        dispatch(createCategories(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+          navigate("/admin/list-category");
+        }, 300);
+      }
     },
   });
   return (
     <div>
-      <h3 className="mb-4 title">Thêm danh mục</h3>
+      <h3 className="mb-4 title">
+        {getPCatId !== undefined ? "Chỉnh sửa" : "Thêm"} danh mục
+      </h3>
       <div>
         <form action="" onSubmit={formik.handleSubmit}>
           <CustomInput
@@ -45,7 +75,7 @@ const Addcat = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            Thêm danh mục
+            {getPCatId !== undefined ? "Chỉnh sửa" : "Thêm"} danh mục
           </button>
         </form>
       </div>

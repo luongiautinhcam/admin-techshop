@@ -51,8 +51,6 @@ const Addbrand = () => {
           navigate("/admin/list-brand");
         }, 300);
       }
-
-      
     },
   });
   return (

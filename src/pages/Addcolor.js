@@ -1,33 +1,63 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CustomInput from "../components/CustomInput";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { createColors } from "../features/color/colorSlice";
+import {
+  createColors,
+  getAColor,
+  resetState,
+  updateAColor,
+} from "../features/color/colorSlice";
 
 let schema = yup.object().shape({
   title: yup.string().required("Màu không được để trống"),
 });
 const Addcolor = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const getColorId = location.pathname.split("/")[3];
+  const newColor = useSelector((state) => state.color);
+  const { colorName } = newColor;
+  useEffect(() => {
+    if (getColorId !== undefined) {
+      dispatch(getAColor(getColorId));
+    } else {
+      dispatch(resetState());
+    }
+  }, [getColorId]);
+
   const navigate = useNavigate();
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
+      title: colorName || "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createColors(values));
-      formik.resetForm();
-      setTimeout(() => {
-        navigate("/admin/list-color");
-      }, 2000);
+      if (getColorId !== undefined) {
+        const data = { id: getColorId, colorData: values };
+        dispatch(updateAColor(data));
+        setTimeout(() => {
+          dispatch(resetState());
+          navigate("/admin/list-color");
+        }, 100);
+      } else {
+        dispatch(createColors(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+          navigate("/admin/list-color");
+        }, 300);
+      }
     },
   });
   return (
     <div>
-      <h3 className="mb-4 title">Thêm màu</h3>
+      <h3 className="mb-4 title">
+        {getColorId !== undefined ? "Chỉnh sửa" : "Thêm"} màu
+      </h3>
       <div>
         <form action="" onSubmit={formik.handleSubmit}>
           <CustomInput
@@ -45,7 +75,7 @@ const Addcolor = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            Thêm màu
+            {getColorId !== undefined ? "Chỉnh sửa" : "Thêm"} màu
           </button>
         </form>
       </div>

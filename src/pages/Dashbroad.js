@@ -112,11 +112,11 @@ const Dashbroad = () => {
   };
   return (
     <div>
-      <h3 className="mb-4 title">Dashbroad</h3>
+      <h3 className="mb-4 title">Thống kê</h3>
       <div className="d-flex justify-content-between align-items-center gap-3">
         <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
           <div>
-            <p className="desc">Total</p>
+            <p className="desc">Tổng cộng</p>
             <h4 className="mb-0 sub-title">$10000</h4>
           </div>
           <div className="d-flex flex-column align-items-end">
@@ -128,7 +128,7 @@ const Dashbroad = () => {
         </div>
         <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
           <div>
-            <p className="desc">Total</p>
+            <p className="desc">Tổng cộng</p>
             <h4 className="mb-0 sub-title">$10000</h4>
           </div>
           <div className="d-flex flex-column align-items-end">
@@ -140,7 +140,7 @@ const Dashbroad = () => {
         </div>
         <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
           <div>
-            <p className="desc">Total</p>
+            <p className="desc">Tổng cộng</p>
             <h4 className="mb-0 sub-title">$10000</h4>
           </div>
           <div className="d-flex flex-column align-items-end">
