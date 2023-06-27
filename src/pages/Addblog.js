@@ -9,7 +9,12 @@ import * as yup from "yup";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
-import { createBlogs, resetState } from "../features/blogs/blogSlice";
+import {
+  createBlogs,
+  getABlog,
+  resetState,
+  updateABlog,
+} from "../features/blogs/blogSlice";
 import { getCategories } from "../features/bcategory/bcategorySlice";
 
 let schema = yup.object().shape({
@@ -20,24 +25,36 @@ let schema = yup.object().shape({
 const Addblog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [images, setImages] = useState();
+  const location = useLocation();
+  const getBlogId = location.pathname.split("/")[3];
+  useEffect(() => {
+    if (getBlogId !== undefined) {
+      dispatch(getABlog(getBlogId));
+      img.push(blogImages);
+    } else {
+      dispatch(resetState());
+    }
+  }, [getBlogId]);
 
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getCategories());
   }, []);
 
   const imgState = useSelector((state) => state.upload.images);
   const bCatState = useSelector((state) => state.bCategory.bCategories);
-  const blogState = useSelector((state) => state.blog.blogs);
-  const { isSuccess, isError, isLoading, createdBlog } = blogState;
-  // useEffect(() => {
-  //   if (isSuccess && createdBlog) {
-  //     toast.success("Thêm bài thành công!");
-  //   }
-  //   if (isError) {
-  //     toast.error("Có lỗi gì đó!");
-  //   }
-  // }, [isSuccess, isError, isLoading]);
+  const blogState = useSelector((state) => state.blogs);
+  const {
+    isSuccess,
+    isError,
+    isLoading,
+    createdBlog,
+    blogName,
+    blogDecs,
+    blogCategory,
+    blogImages,
+    updatedBlog,
+  } = blogState;
 
   const img = [];
   imgState.forEach((i) => {
@@ -49,44 +66,40 @@ const Addblog = () => {
 
   useEffect(() => {
     formik.values.images = img;
-  }, [img]);
+  }, [blogImages]);
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
-      decscription: "",
-      category: "",
+      title: blogName || "",
+      decscription: blogDecs || "",
+      category: blogCategory || "",
       images: "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createBlogs(values));
-      formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-        navigate("/admin/blog-list");
-      }, 300);
+      if (getBlogId !== undefined) {
+        const data = { id: getBlogId, blogData: values };
+        dispatch(updateABlog(data));
+        setTimeout(() => {
+          dispatch(resetState());
+          navigate("/admin/blog-list");
+        }, 300);
+      } else {
+        // alert(JSON.stringify(values))
+        dispatch(createBlogs(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+          navigate("/admin/blog-list");
+        }, 300);
+      }
     },
-    // onSubmit: (values) => {
-    //   if (getBlogId !== undefined) {
-    //     const data = { id: getBlogId, blogData: values };
-    //     dispatch(updateABlog(data));
-    //     setTimeout(() => {
-    //       dispatch(resetState());
-    //       navigate("/admin/blog-list");
-    //     }, 100);
-    //   } else {
-    //     dispatch(createBlogs(values));
-    //     formik.resetForm();
-    //     setTimeout(() => {
-    //       dispatch(resetState());
-    //       navigate("/admin/blog-list");
-    //     }, 300);
-    //   }
-    // },
   });
   return (
     <div>
-      <h3 className="mb-4 title">Thêm bài viết</h3>
+      <h3 className="mb-4 title">
+        {getBlogId !== undefined ? "Chỉnh sửa" : "Thêm"} bài viết bài viết
+      </h3>
       <div className="">
         <form action="" onSubmit={formik.handleSubmit}>
           <div className="mt-4">
@@ -167,7 +180,7 @@ const Addblog = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            Thêm bài viết
+            {getBlogId !== undefined ? "Chỉnh sửa" : "Thêm"} bài viết bài viết
           </button>
         </form>
       </div>
