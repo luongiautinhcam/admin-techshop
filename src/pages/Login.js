@@ -48,7 +48,7 @@ const Login = () => {
         <h3 className="text-center title">Đăng nhập</h3>
         <p className="text-center">Đăng nhập tài khoản để tiếp tục</p>
         <div className="error text-center">
-          {message.message == "Rejected" ? "Bạn không phải là admin" : ""}
+          {message.message == "Rejected" ? "Bạn không đã nhận sai mật khẩu hoặc không có quyền admin" : ""}
         </div>
         <form action="" onSubmit={formik.handleSubmit}>
           <CustomInput

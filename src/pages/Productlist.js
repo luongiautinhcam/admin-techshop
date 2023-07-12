@@ -1,10 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "../features/product/productSlice";
+import {
+  deleteAProduct,
+  getProducts,
+  resetState,
+} from "../features/product/productSlice";
+import { getBrands, getABrand } from "../features/brand/brandSlice";
+import { getCategories } from "../features/pcategory/pcategorySlice";
+import { getColors } from "../features/color/colorSlice";
 import { Link } from "react-router-dom";
+import CustomModal from "../components/CustomModal";
 
 const columns = [
   {
@@ -42,9 +50,22 @@ const columns = [
 ];
 
 const Productlist = () => {
+  const [open, setOpen] = useState(false);
+  const [productId, setproductId] = useState("");
+  const showModal = (e) => {
+    setOpen(true);
+    setproductId(e);
+  };
+  const hideModal = () => {
+    setOpen(false);
+  };
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getProducts());
+    dispatch(getBrands());
+    dispatch(getCategories());
+    dispatch(getColors());
   }, []);
   const productState = useSelector((state) => state.product.products);
   const data1 = [];
@@ -52,28 +73,52 @@ const Productlist = () => {
     data1.push({
       key: i + 1,
       title: productState[i].title,
-      brand: productState[i].brand,
-      category: productState[i].category,
-      color: productState[i].color,
-      price: productState[i].price,
+      brand: productState[i].brand[0].title,
+      category: productState[i].category[0].title,
+      color: productState[i].color[0].title,
+      price: Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(productState[i].price),
       action: (
         <>
-          <Link className="fs-3 text-danger" to="/">
+          <Link
+            to={`/admin/editproduct/${productState[i]._id}`}
+            className="fs-3 text-danger"
+          >
             <BiEdit />
           </Link>
-          <Link className="fs-3 text-danger ms-3" to="/">
+          <button
+            className="fs-3 text-danger ms-3 bg-transparent border-0"
+            onClick={() => showModal(productState[i]._id)}
+          >
             <AiFillDelete />
-          </Link>
+          </button>
         </>
       ),
     });
   }
+  const deleteProduct = (e) => {
+    dispatch(deleteAProduct(e));
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getProducts());
+    }, 100);
+  };
   return (
     <div>
       <h3 className="mb-4 title">Danh sách sản phẩm</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
+      <CustomModal
+        hideModal={hideModal}
+        open={open}
+        performAction={() => {
+          deleteProduct(productId);
+        }}
+        title="Bạn có muốn xoá sản phẩm"
+      />
     </div>
   );
 };

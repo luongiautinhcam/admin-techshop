@@ -9,10 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getBrands } from "../features/brand/brandSlice";
 import { getCategories } from "../features/pcategory/pcategorySlice";
 import { getColors } from "../features/color/colorSlice";
-import Dropzone from "react-dropzone";
 import { delImg, uploadImg } from "../features/upload/uploadSlice";
 import {
-  createProducts,
   getAProduct,
   resetState,
   updateAProduct,
@@ -26,9 +24,9 @@ let schema = yup.object().shape({
   category: yup.string().required("Danh mục không được để trống"),
   tags: yup.string().required("Nhãn dán không được để trống"),
   color: yup.string().required("Màu không được để trống"),
-  quantity: yup.number().required("Số lượng sản phẩm không được để trống"),
+  quantity: yup.number().required("Số    lượng sản phẩm không được để trống"),
 });
-const Addproduct = () => {
+const Editproduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,12 +34,10 @@ const Addproduct = () => {
   useEffect(() => {
     if (getProductId !== undefined) {
       dispatch(getAProduct(getProductId));
-      img.push(productImg);
     } else {
       dispatch(resetState());
     }
   }, [getProductId]);
-  // const [images, setImages] = useState([]);
 
   useEffect(() => {
     dispatch(getBrands());
@@ -54,7 +50,21 @@ const Addproduct = () => {
   const colorState = useSelector((state) => state.color.colors);
   const imgState = useSelector((state) => state.upload.images);
   const newProduct = useSelector((state) => state.product);
-  const { productImg } = newProduct;
+  const {
+    productName,
+    productDecs,
+    productPrice,
+    productBrand,
+    productCategory,
+    productTags,
+    productColor,
+    productQuantity,
+  } = newProduct;
+
+  const imgOldState = useSelector((state) => state.product.productImages);
+  const imgOldState1 = useSelector((state) => state.product.productImages1);
+  const imgOldState2 = useSelector((state) => state.product.productImages2);
+  const imgOldState3 = useSelector((state) => state.product.productImages3);
 
   const img = [];
   imgState.forEach((i) => {
@@ -63,24 +73,29 @@ const Addproduct = () => {
       url: i.url,
     });
   });
-  useEffect(() => {
-    formik.values.images = img;
-  }, [img]);
+
+  console.log(img);
+
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
-      decscription: "",
-      price: "",
-      brand: "",
-      category: "",
-      tags: "",
-      color: "",
-      quantity: "",
-      images: "",
+      title: productName || "",
+      decscription: productDecs || "",
+      price: productPrice || "",
+      brand: productBrand || "",
+      category: productCategory || "",
+      tags: productTags || "",
+      color: productColor || "",
+      quantity: productQuantity || "",
+      images: img,
+      _id: getProductId,
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      // alert(JSON.stringify(values));
+      //alert(JSON.stringify(getProductId));
+      //alert(JSON.stringify(values));
+      //alert(JSON.stringify(img));
+
       if (getProductId !== undefined) {
         const data = { id: getProductId, productData: values };
         dispatch(updateAProduct(data));
@@ -88,15 +103,17 @@ const Addproduct = () => {
           dispatch(resetState());
           navigate("/admin/product-list");
         }, 100);
-      } else {
-        dispatch(createProducts(values));
-        formik.resetForm();
-        setTimeout(() => {
-          navigate("/admin/product-list");
-        }, 300);
       }
     },
   });
+
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    setSelectedFiles(Array.from(files));
+    dispatch(uploadImg(files));
+  };
   return (
     <div>
       <h3 className="mb-4 title">
@@ -234,20 +251,6 @@ const Addproduct = () => {
           <div className="error">
             {formik.touched.quantity && formik.errors.quantity}
           </div>
-          <div className="bg-white border-1  p-5 text-center">
-            <Dropzone
-              onDrop={(acceptedFiles) => dispatch(uploadImg(acceptedFiles))}
-            >
-              {({ getRootProps, getInputProps }) => (
-                <section>
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <p>Kéo và thả một số tệp vào đây hoặc nhấp để chọn tệp</p>
-                  </div>
-                </section>
-              )}
-            </Dropzone>
-          </div>
           <div className="showimages d-flex flex-wrap gap-3">
             {imgState?.map((i, j) => {
               return (
@@ -263,6 +266,29 @@ const Addproduct = () => {
               );
             })}
           </div>
+          <div className="showimages d-flex flex-wrap gap-3">
+            <input
+              className="bg-white border-1  p-5 text-center"
+              type="file"
+              multiple
+              accept=".jpg, .jpeg, .png"
+              // onChange={(e) => dispatch(uploadImg(e.target.files))}
+              onChange={handleFileChange}
+            />
+            <ul>
+              {selectedFiles.map((file, index) => (
+                <li key={index}>{file.name}</li>
+              ))}
+            </ul>
+          </div>
+          <h5>Hình ảnh sản phẩm hiện tại</h5>
+          <div className="d-flex">
+            <img src={imgOldState} alt="" width={200} height={200} />
+            <img src={imgOldState1} alt="" width={200} height={200} />
+            <img src={imgOldState2} alt="" width={200} height={200} />
+            <img src={imgOldState3} alt="" width={200} height={200} />
+          </div>
+
           <button
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
@@ -275,4 +301,4 @@ const Addproduct = () => {
   );
 };
 
-export default Addproduct;
+export default Editproduct;
