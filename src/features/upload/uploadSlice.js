@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import uploadService from "./uploadService";
 
 export const uploadImg = createAsyncThunk(
@@ -27,6 +28,8 @@ export const delImg = createAsyncThunk(
   }
 );
 
+export const resetState = createAction("Reset_all");
+
 const initialState = {
   images: [],
   isError: false,
@@ -49,6 +52,7 @@ export const uploadSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.images = action.payload;
+        toast.success("Tải ảnh thành công");
       })
       .addCase(uploadImg.rejected, (state, action) => {
         state.isLoading = false;
@@ -70,7 +74,8 @@ export const uploadSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.payload;
-      });
+      })
+      .addCase(resetState, () => initialState);
   },
 });
 

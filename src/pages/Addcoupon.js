@@ -25,7 +25,19 @@ const Addcoupon = () => {
   const changeDateFormat = (date) => {
     const newDate = new Date(date).toLocaleDateString();
     const [month, day, year] = newDate.split("/");
-    return [year, month, day].join("-");
+    let mm = 0;
+    let dd = 0;
+    if (month < 10) {
+      mm = "0" + month;
+    } else {
+      mm = month;
+    }
+    if (day < 10) {
+      dd = "0" + day;
+    } else {
+      dd = day;
+    }
+    return [year, mm, dd].join("-");
   };
   useEffect(() => {
     if (getCouponId !== undefined) {

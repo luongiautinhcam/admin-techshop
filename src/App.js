@@ -22,6 +22,11 @@ import Addbrand from "./pages/Addbrand";
 import Addproduct from "./pages/Addproduct";
 import Couponlist from "./pages/Couponlist";
 import Addcoupon from "./pages/Addcoupon";
+import Addbanner from "./pages/Addbanner";
+import Bannerlist from "./pages/Bannerlist";
+import ViewEnq from "./pages/ViewEnq";
+import Editproduct from "./pages/Editproduct";
+import ViewOrder from "./pages/ViewOrder";
 
 function App() {
   return (
@@ -33,7 +38,9 @@ function App() {
         <Route path="/admin" element={<MainLayout />}>
           <Route index element={<Dashbroad />} />
           <Route path="enquiries" element={<Enquiries />} />
+          <Route path="enquiries/:id" element={<ViewEnq />} />
           <Route path="blog" element={<Addblog />} />
+          <Route path="blog/:id" element={<Addblog />} />
           <Route path="blog-list" element={<Bloglist />} />
           <Route path="coupon" element={<Addcoupon />} />
           <Route path="coupon/:id" element={<Addcoupon />} />
@@ -42,8 +49,11 @@ function App() {
           <Route path="blogcategory/:id" element={<Addblogcat />} />
           <Route path="blog-category-list" element={<Blogcatlist />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="order/:id" element={<ViewOrder />} />
           <Route path="customer" element={<Customers />} />
           <Route path="product" element={<Addproduct />} />
+          <Route path="product/:id" element={<Addproduct />} />
+          <Route path="editproduct/:id" element={<Editproduct />} />
           <Route path="product-list" element={<Productlist />} />
           <Route path="brand" element={<Addbrand />} />
           <Route path="brand/:id" element={<Addbrand />} />
@@ -54,6 +64,8 @@ function App() {
           <Route path="color" element={<Addcolor />} />
           <Route path="color/:id" element={<Addcolor />} />
           <Route path="list-color" element={<Colorlist />} />
+          <Route path="banner/" element={<Addbanner />} />
+          <Route path="banner-list" element={<Bannerlist />} />
         </Route>
       </Routes>
     </Router>

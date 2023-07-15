@@ -13,12 +13,8 @@ const columns = [
     dataIndex: "key",
   },
   {
-    title: "Tiêu đề",
+    title: "Banner",
     dataIndex: "title",
-  },
-  {
-    title: "Danh mục",
-    dataIndex: "category",
   },
   {
     title: "Hành động",
@@ -26,7 +22,7 @@ const columns = [
   },
 ];
 
-const Bloglist = () => {
+const Bannerlist = () => {
   const [open, setOpen] = useState(false);
   const [blogId, setblogId] = useState("");
   const showModal = (e) => {
@@ -46,15 +42,8 @@ const Bloglist = () => {
     data1.push({
       key: i + 1,
       title: blogState[i].title,
-      category: blogState[i].category[0].title,
       action: (
         <>
-          <Link
-            to={`/admin/blog/${blogState[i]._id}`}
-            className="fs-3 text-danger"
-          >
-            <BiEdit />
-          </Link>
           <button
             className="fs-3 text-danger ms-3 bg-transparent border-0"
             onClick={() => showModal(blogState[i]._id)}
@@ -74,7 +63,7 @@ const Bloglist = () => {
   };
   return (
     <div>
-      <h3 className="mb-4 title">Danh sách bài viết</h3>
+      <h3 className="mb-4 title">Danh sách banner</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
@@ -84,10 +73,10 @@ const Bloglist = () => {
         performAction={() => {
           deleteBlog(blogId);
         }}
-        title="Bạn có muốn xoá bài viết"
+        title="Bạn có muốn xoá banner"
       />
     </div>
   );
 };
 
-export default Bloglist;
+export default Bannerlist;

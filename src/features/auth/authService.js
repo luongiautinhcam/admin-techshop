@@ -23,9 +23,19 @@ const getOrders = async () => {
   return response.data;
 };
 
+const updateUserByAdmin = async (user) => {
+  const response = await axios.put(
+    `${base_url}user/update-user/${user.id}`,
+    { isBlocked: user.userData },
+    config
+  );
+  return response.data;
+};
+
 const authService = {
   login,
   getOrders,
+  updateUserByAdmin,
 };
 
 export default authService;

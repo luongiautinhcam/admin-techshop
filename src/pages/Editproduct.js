@@ -66,6 +66,8 @@ const Editproduct = () => {
   const imgOldState2 = useSelector((state) => state.product.productImages2);
   const imgOldState3 = useSelector((state) => state.product.productImages3);
 
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
   const img = [];
   imgState.forEach((i) => {
     img.push({
@@ -92,11 +94,19 @@ const Editproduct = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      //alert(JSON.stringify(getProductId));
-      //alert(JSON.stringify(values));
-      //alert(JSON.stringify(img));
+      if (selectedFiles.length === 0) {
+        const dataToSend = { ...values };
+        delete dataToSend.images;
+        // alert(JSON.stringify(dataToSend));
 
-      if (getProductId !== undefined) {
+        const data = { id: getProductId, productData: dataToSend };
+        dispatch(updateAProduct(data));
+        setTimeout(() => {
+          dispatch(resetState());
+          navigate("/admin/product-list");
+        }, 100);
+      } else {
+        // alert(JSON.stringify(values));
         const data = { id: getProductId, productData: values };
         dispatch(updateAProduct(data));
         setTimeout(() => {
@@ -106,8 +116,6 @@ const Editproduct = () => {
       }
     },
   });
-
-  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -283,10 +291,46 @@ const Editproduct = () => {
           </div>
           <h5>Hình ảnh sản phẩm hiện tại</h5>
           <div className="d-flex">
-            <img src={imgOldState} alt="" width={200} height={200} />
-            <img src={imgOldState1} alt="" width={200} height={200} />
-            <img src={imgOldState2} alt="" width={200} height={200} />
-            <img src={imgOldState3} alt="" width={200} height={200} />
+            <img
+              src={
+                imgOldState
+                  ? imgOldState
+                  : "https://cdn.tgdd.vn/Products/Images/54/253802/bluetooth-airpods-pro-magsafe-charge-apple-mlwk3-0-1.jpg"
+              }
+              alt=""
+              width={200}
+              height={200}
+            />
+            <img
+              src={
+                imgOldState1
+                  ? imgOldState1
+                  : "https://cdn.tgdd.vn/Products/Images/54/253802/bluetooth-airpods-pro-magsafe-charge-apple-mlwk3-0-1.jpg"
+              }
+              alt=""
+              width={200}
+              height={200}
+            />
+            <img
+              src={
+                imgOldState2
+                  ? imgOldState2
+                  : "https://cdn.tgdd.vn/Products/Images/54/253802/bluetooth-airpods-pro-magsafe-charge-apple-mlwk3-0-1.jpg"
+              }
+              alt=""
+              width={200}
+              height={200}
+            />
+            <img
+              src={
+                imgOldState3
+                  ? imgOldState3
+                  : "https://cdn.tgdd.vn/Products/Images/54/253802/bluetooth-airpods-pro-magsafe-charge-apple-mlwk3-0-1.jpg"
+              }
+              alt=""
+              width={200}
+              height={200}
+            />
           </div>
 
           <button

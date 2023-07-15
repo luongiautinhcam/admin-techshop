@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MenuFoldOutlined } from "@ant-design/icons";
 import {
   AiOutlineDashboard,
@@ -15,16 +15,30 @@ import { IoIosNotifications } from "react-icons/io";
 import { FaClipboardList, FaBloggerB } from "react-icons/fa";
 import { SiBrandfolder } from "react-icons/si";
 import { BiCategoryAlt } from "react-icons/bi";
+import { GiVerticalBanner } from "react-icons/gi";
 import { Layout, Menu, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getTokenFromLocalStorage = localStorage.getItem("user");
+    if (!getTokenFromLocalStorage) {
+      navigate("/");
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -156,6 +170,23 @@ const MainLayout = () => {
               icon: <FaClipboardList className="fs-4" />,
               label: "Thắc mắc",
             },
+            {
+              key: "banners",
+              icon: <GiVerticalBanner className="fs-4" />,
+              label: "Quản lý banner",
+              children: [
+                {
+                  key: "banner",
+                  icon: <ImBlog className="fs-4" />,
+                  label: "Thêm banner",
+                },
+                {
+                  key: "banner-list",
+                  icon: <RiCouponLine className="fs-4" />,
+                  label: "Danh sách banner",
+                },
+              ],
+            },
           ]}
         />
       </Sider>
@@ -220,6 +251,7 @@ const MainLayout = () => {
                 </li>
                 <li>
                   <Link
+                    onClick={handleLogout}
                     className="dropdown-item py-1 mb-1"
                     style={{ height: "auto", lineHeight: "20px" }}
                     to="#"

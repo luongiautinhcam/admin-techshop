@@ -8,7 +8,7 @@ import {
   getProducts,
   resetState,
 } from "../features/product/productSlice";
-import { getBrands, getABrand } from "../features/brand/brandSlice";
+import { getBrands } from "../features/brand/brandSlice";
 import { getCategories } from "../features/pcategory/pcategorySlice";
 import { getColors } from "../features/color/colorSlice";
 import { Link } from "react-router-dom";

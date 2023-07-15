@@ -85,7 +85,7 @@ const Blogcatlist = () => {
         performAction={() => {
           deleteBlogCategory(bCatId);
         }}
-        title={`Bạn có muốn xoá danh mục sản phẩm ${bCatId.title}`}
+        title={`Bạn có muốn xoá danh mục bài viết ${bCatId.title}`}
       />
     </div>
   );

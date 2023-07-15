@@ -36,6 +36,17 @@ export const getOrders = createAsyncThunk(
   }
 );
 
+export const updateAUserByAdmin = createAsyncThunk(
+  "enquiry/update-enquiry",
+  async (user, thunkAPI) => {
+    try {
+      return await authService.updateUserByAdmin(user);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -69,6 +80,22 @@ export const authSlice = createSlice({
         state.message = "success";
       })
       .addCase(getOrders.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(updateAUserByAdmin.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateAUserByAdmin.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.updatedUserByAdmin = action.payload;
+        state.message = "success";
+      })
+      .addCase(updateAUserByAdmin.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

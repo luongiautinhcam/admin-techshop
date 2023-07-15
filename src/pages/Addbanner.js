@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import CustomInput from "../components/CustomInput";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -6,7 +7,6 @@ import Dropzone from "react-dropzone";
 import { delImg, uploadImg } from "../features/upload/uploadSlice";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import {
@@ -22,29 +22,40 @@ let schema = yup.object().shape({
   decscription: yup.string().required("Mô tả không được để trống"),
   category: yup.string().required("Danh mục không được để trống"),
 });
-const Addblog = () => {
+
+const Addbanner = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getBlogId = location.pathname.split("/")[3];
+  const getBannerId = location.pathname.split("/")[3];
   useEffect(() => {
-    if (getBlogId !== undefined) {
-      dispatch(getABlog(getBlogId));
-      img.push(blogImages);
+    if (getBannerId !== undefined) {
+      dispatch(getABlog(getBannerId));
+      img.push(blogImg);
     } else {
       dispatch(resetState());
     }
-  }, [getBlogId]);
+  }, [getBannerId]);
+  const newBlog = useSelector((state) => state.blog);
+  const { blogName, blogCategory, blogDecs, blogImg } = newBlog;
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
-    dispatch(resetState());
     dispatch(getCategories());
   }, []);
 
   const imgState = useSelector((state) => state.upload.images);
   const bCatState = useSelector((state) => state.bCategory.bCategories);
-  const blogState = useSelector((state) => state.blogs);
-  const { blogName, blogDecs, blogCategory, blogImages } = blogState;
+  // const newBlog = useSelector((state) => state.blog);
+  // const { isSuccess, isError, isLoading, createdBlog } = newBlog;
+  // useEffect(() => {
+  //   if (isSuccess && createdBlog) {
+  //     toast.success("Thêm bài thành công!");
+  //   }
+  //   if (isError) {
+  //     toast.error("Có lỗi gì đó!");
+  //   }
+  // }, [isSuccess, isError, isLoading]);
 
   const img = [];
   imgState.forEach((i) => {
@@ -56,7 +67,8 @@ const Addblog = () => {
 
   useEffect(() => {
     formik.values.images = img;
-  }, [blogImages]);
+  }, []);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -67,15 +79,14 @@ const Addblog = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      if (getBlogId !== undefined) {
-        const data = { id: getBlogId, blogData: values };
+      if (getBannerId !== undefined) {
+        const data = { id: getBannerId, blogData: values };
         dispatch(updateABlog(data));
         setTimeout(() => {
           dispatch(resetState());
           navigate("/admin/blog-list");
-        }, 300);
+        }, 100);
       } else {
-        // alert(JSON.stringify(values))
         dispatch(createBlogs(values));
         formik.resetForm();
         setTimeout(() => {
@@ -88,53 +99,10 @@ const Addblog = () => {
   return (
     <div>
       <h3 className="mb-4 title">
-        {getBlogId !== undefined ? "Chỉnh sửa" : "Thêm"} bài viết bài viết
+        {getBannerId !== undefined ? "Chỉnh sửa" : "Thêm"} banner
       </h3>
       <div className="">
         <form action="" onSubmit={formik.handleSubmit}>
-          <div className="mt-4">
-            <CustomInput
-              type="text"
-              label="Tiêu đề bài viết"
-              name="title"
-              onChng={formik.handleChange("title")}
-              onBlr={formik.handleBlur("title")}
-              val={formik.values.title}
-            />
-          </div>
-          <div className="error">
-            {formik.touched.title && formik.errors.title}
-          </div>
-          <select
-            name="category"
-            onChange={formik.handleChange("category")}
-            onBlur={formik.handleBlur("category")}
-            value={formik.values.category}
-            className="form-control py-3 mt-3"
-            id=""
-          >
-            <option value="">Chọn danh mục bài viết</option>
-            {bCatState?.map((i, j) => {
-              return (
-                <option key={j} value={i._id}>
-                  {i.title}
-                </option>
-              );
-            })}
-          </select>
-          <div className="error">
-            {formik.touched.category && formik.errors.category}
-          </div>
-          <ReactQuill
-            theme="snow"
-            className="mt-3"
-            name="decscription"
-            onChange={formik.handleChange("decscription")}
-            value={formik.values.decscription}
-          />
-          <div className="error">
-            {formik.touched.decscription && formik.errors.decscription}
-          </div>
           <div className="bg-white border-1  p-5 text-center mt-3">
             <Dropzone
               onDrop={(acceptedFiles) => dispatch(uploadImg(acceptedFiles))}
@@ -151,7 +119,7 @@ const Addblog = () => {
               )}
             </Dropzone>
           </div>
-          <div className="showimages d-flex flex-wrap mt-3 gap-3">
+          <div className="showimages d-flex flex-wrap gap-3">
             {imgState?.map((i, j) => {
               return (
                 <div className="position-relative" key={j}>
@@ -170,7 +138,7 @@ const Addblog = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            {getBlogId !== undefined ? "Chỉnh sửa" : "Thêm"} bài viết bài viết
+            {getBannerId !== undefined ? "Chỉnh sửa" : "Thêm"} banner
           </button>
         </form>
       </div>
@@ -178,4 +146,4 @@ const Addblog = () => {
   );
 };
 
-export default Addblog;
+export default Addbanner;

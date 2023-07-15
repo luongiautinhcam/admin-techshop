@@ -151,6 +151,7 @@ export const brandSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
+        toast.error(action.payload.response.data.message);
       })
       .addCase(resetState, () => initialState);
   },

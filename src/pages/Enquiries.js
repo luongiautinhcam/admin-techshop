@@ -99,11 +99,13 @@ const Enquiries = () => {
       ),
     });
   }
+  //Cạp nhật trang thái yêu cầu
   const setEnquiryStatus = (e, i) => {
     console.log(e, i);
     const data = { id: i, enqData: e };
     dispatch(updateAEnquiry(data));
   };
+  //Xoá yêu cầu
   const deleteEnq = (e) => {
     dispatch(deleteAEnquiry(e));
     setOpen(false);

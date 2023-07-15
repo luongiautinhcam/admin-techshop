@@ -151,6 +151,7 @@ export const pCategorySlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
+        toast.error("Không thể xoá danh mục sản phẩm");
       })
       .addCase(resetState, () => initialState);
   },
