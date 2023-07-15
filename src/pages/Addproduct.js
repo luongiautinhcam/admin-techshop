@@ -100,7 +100,7 @@ const Addproduct = () => {
   return (
     <div>
       <h3 className="mb-4 title">
-        {getProductId !== undefined ? "Chỉnh sửa" : "Thêm"} sản phẩm
+        Thêm sản phẩm
       </h3>
       <div className="">
         <form
@@ -267,7 +267,7 @@ const Addproduct = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            {getProductId !== undefined ? "Chỉnh sửa" : "Thêm"} sản phẩm
+            Thêm sản phẩm
           </button>
         </form>
       </div>
